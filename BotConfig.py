@@ -1,4 +1,7 @@
 #CONFIGURATION
+
+#NOTE: THIS DOES NOT RUN ON A SCHEDULE AUTOMATICALLY. I RECOMMEND SETTING UP A cronjob TO RUN THE MAIN PYTHONS SCRIPT ON A SCHEDULE
+
 #This is for your Twitter App keys
 app_key = ""
 app_secret = ""
@@ -8,8 +11,8 @@ oauth_token_secret = ""
 #This how Reddit sees your script poking in, name it something unique
 user_agent = ""
 
-#Images Directory, which should look similar to "/var/NicoBot/images/"
-img_dir = "/var/RedditTwitterPoster/images/"
+#Images Directory, which should look similar to "/var/RedditTwitterPoster/images/"
+img_dir = ""
 
 #Choose the subreddit you wish to pull from such as 'python' for reddit.com/r/python
 source_subreddit = 'Python'
