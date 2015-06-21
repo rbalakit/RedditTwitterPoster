@@ -92,6 +92,7 @@ while (diditpost == 0):
                             print "Twitter Pic Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink)
                             photo = open(
                                 img_dir + submission.id + "_" + tweeturl.split('/')[-1], 'rb')
+                            twitter.update_status_with_media(status= (shorttitle +" "+ hashtags +" "+ subpermalink), media=photo)
                             diditpost = 1
                         else:
 
@@ -99,12 +100,15 @@ while (diditpost == 0):
                             # png, or gif"
                             if (("youtube." in submission.url) or ("youtu.be" in submission.url)) and (post_youtube == True):
                                 print "Twitter YouTube Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                twitter.update_status(status=(shorttitle +" "+ hashtags+" "+ subpermalink+" "+ tweeturl))
                                 diditpost = 1
                             elif(("vine.co" in submission.url)) and (post_vine == True):
                                 print "Twitter Vine Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                twitter.update_status(status=(shorttitle +" "+ hashtags+" "+ subpermalink+" "+ tweeturl))
                                 diditpost = 1
                             elif(("soundcloud" in submission.url) or ("snd.sc" in submission.url)) and (post_soundcloud == True):
                                 print "Twitter Soundcloud Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                twitter.update_status(status=(shorttitle +" "+ hashtags+" "+ subpermalink+" "+ tweeturl))
                                 diditpost = 1
                             else:
                                 print "[!] The randomly selected submission is not embeddable media! Trying again! [!]"
