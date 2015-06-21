@@ -18,7 +18,7 @@ user_agent = ""
 enable_tweets = True
 
 #Sets the number of tweets before a submission may be reposted. Recommended no higher than either a quarter of the total link submissions from the subreddit, or 250 (Whichever is smaller) (Integer)
-repeat_threshold = 5
+repeat_threshold = 50
 
 #Choose the subreddit you wish to pull from such as 'python' for reddit.com/r/python
 source_subreddit = 'Python'

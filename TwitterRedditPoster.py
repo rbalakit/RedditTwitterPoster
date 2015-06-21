@@ -9,6 +9,7 @@ from twython import Twython
 from mimetypes import guess_extension
 import urllib3
 
+
 # IN ORDER TO RUN PROPERLY, THE CONFIGURATION FILE "BotConfig.py" IS NECESSARY
 # The following are default values if your configuration file is not up-to-date and missing some settings. They are overwritten by the values in the configuration file.
 # This is contained in an 'if' branch so I can hide it. Is there a proper
@@ -60,7 +61,7 @@ def postLink(srttitle, htags, subpl, twurl):
     if enable_tweets == True:
         twitter.update_status(
             status=(srttitle + " " + htags + " " + subpl + " " + twurl))
-        print "Tweet was actually posted"
+        print "Tweet was posted"
     else:
         print "Tweet was pretend-posted"
     return 1
@@ -71,7 +72,7 @@ def postImage(srttitle, htags, subpl, twurl, subid):
         photo = open(img_dir + subid + "_" + twurl.split('/')[-1], 'rb')
         twitter.update_status_with_media(
             status=(srttitle + " " + htags + " " + subpl), media=photo)
-        print "Tweet was actually posted"
+        print "Tweet was posted"
     else:
         print "Tweet was pretend-posted"
     return 1
@@ -88,15 +89,15 @@ while (posted == 0):
     uniquepost = 0
     # for submission in r.get_subreddit('niconiconi').get_new(limit=1000):
     while (uniquepost == 0):
-        print "fetching a new post..."
+        print "\nfetching a new post..."
         submission = r.get_random_submission(source_subreddit)
         print submission.title, submission.url, submission.id
         if submission.id in prevlogs:
             uniquepost = 0
-            print "This submission has already been posted within the threshold, trying for a new submission..."
+            print "\nThis submission has already been posted within the threshold, trying for a new submission..."
         else:
             uniquepost = 1
-            print "This is a relatively new submission, it will be posted"
+            print "\nThis is a relatively new submission, it will be posted"
 
             if (not submission.over_18) or (post_NSFW == True):
                 if not submission.is_self:
@@ -122,26 +123,25 @@ while (posted == 0):
 
                         tweeturl = processUrl(submission.url)
 
-                        print tweeturl
                         if ((tweeturl[-4:] == ".jpg" or tweeturl[-5:] == "jpeg" or tweeturl[-4:] == ".png") and (post_images == True)) or ((tweeturl[-4:] == ".gif") and (post_gifs == True)):
-                            print "Twitter Pic Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink)
+                            print "\n\nTwitter Pic Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink)
                             if not os.path.exists(img_dir + submission.id + "_" + tweeturl.split('/')[-1]):
                                 urllib.urlretrieve(
                                     tweeturl, img_dir + submission.id + "_" + tweeturl.split('/')[-1])
-                            print submission.title, submission.url, submission.id
+                            #print submission.title, submission.url, submission.id
                             posted = postImage(
                                 shorttitle, hashtags, subpermalink, tweeturl, submission.id)
                         else:
                             if (("youtube." in submission.url) or ("youtu.be" in submission.url)) and (post_youtube == True):
-                                print "Twitter YouTube Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                print "\n\nTwitter YouTube Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
                                 posted = postLink(
                                     shorttitle, hashtags, subpermalink, tweeturl)
                             elif(("vine.co" in submission.url)) and (post_vine == True):
-                                print "Twitter Vine Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                print "\n\nTwitter Vine Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
                                 posted = postLink(
                                     shorttitle, hashtags, subpermalink, tweeturl)
                             elif(("soundcloud" in submission.url) or ("snd.sc" in submission.url)) and (post_soundcloud == True):
-                                print "Twitter Soundcloud Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
+                                print "\n\nTwitter Soundcloud Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink + " " + tweeturl)
                                 posted = postLink(
                                     shorttitle, hashtags, subpermalink, tweeturl)
                             else:
@@ -158,6 +158,6 @@ while (posted == 0):
 file = open(img_dir + "submissions_log.txt", "w+")
 newlogs = submission.id + "\n" + prevlogs
 newlogs = newlogs[:(7 * repeat_threshold)]
-print newlogs
+#print newlogs
 file.write(newlogs)
 file.close()
