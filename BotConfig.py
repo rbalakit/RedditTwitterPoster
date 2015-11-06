@@ -1,7 +1,4 @@
 #CONFIGURATION
-
-#NOTE: THIS DOES NOT RUN ON A SCHEDULE AUTOMATICALLY. I RECOMMEND SETTING UP A cronjob TO RUN THE MAIN PYTHONS SCRIPT ON A SCHEDULE
-
 #This is for your Twitter App keys
 app_key = ""
 app_secret = ""
@@ -9,10 +6,10 @@ oauth_token = ""
 oauth_token_secret = ""
 
 #Images Directory, which should look similar to "/var/RedditTwitterPoster/images/"
-img_dir = ""
+img_dir = "/var/NicoBot/KongouImages/"
 
 #This how Reddit sees your script poking in, name it something unique
-user_agent = ""
+user_agent = "NicoNicoNi_Twitter 0.0.0.1 by /u/Mushrooshi"
 
 #Enables if the bot actually posts to twitter. Useful for testing with prints instead of spamming your followers
 enable_tweets = True
@@ -21,10 +18,10 @@ enable_tweets = True
 repeat_threshold = 50
 
 #Choose the subreddit you wish to pull from such as 'python' for reddit.com/r/python
-source_subreddit = 'Python'
+source_subreddit = 'OneTrueKongou'
 
 #Choose the string of hashtags to use (Recommended no longer than 30 characters) (Set to "" if you want blank)
-hashtags = "#Python #Programming"
+hashtags = "#Kongou #Kancolle"
 
 #Sets if the bot should try convert strings enclosed by square brackets into hashtags (True or False)
 autohashtag = False
@@ -36,7 +33,7 @@ post_reddit_title = True
 link_to_reddit = True
 
 #Sets if the bot will post NSFW-tagged submissions (True or False)
-post_NSFW = False
+post_NSFW = True
 
 #Sets the minimum score a submission must have to be posted (integer)
 min_score = 0
@@ -45,13 +42,13 @@ min_score = 0
 post_images = True
 
 #Sets if the bot will post gifs (animated or not) (True or False)
-post_gifs = False
+post_gifs = True
 
 #Sets if the bot will post links from Vine (True or False)
-post_vine = False
+post_vine = True
 
 #Sets if the bot will post links from Soundcloud (True or False)
-post_soundcloud = False
+post_soundcloud = True
 
 #Sets if the bot will post links from YouTube (True or False)
 post_youtube = True
