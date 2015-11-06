@@ -1,10 +1,12 @@
 import json
+import requests
 import ssl
 import re
 import praw
 import pprint
 import urllib
 import os.path
+import sys
 from twython import Twython
 from mimetypes import guess_extension
 import urllib3
@@ -17,7 +19,7 @@ import urllib3
 if True:
     img_dir = "/var/TwitterRedditPoster/images/"
     user_agent = "Unconfigured TwitterRedditPoster Script"
-    enable_tweets = True
+    enable_tweets = False
     repeat_threshold = 20
     source_subreddit = 'all'
     hashtags = "#Invalid #Config #File"
@@ -31,10 +33,95 @@ if True:
     post_vine = False
     post_soundcloud = False
     post_youtube = True
+    link_to_source = True
+#from BotConfig import *
 
-from BotConfig import *
+if sys.argv[1]:
+	m = __import__ (sys.argv[1])
+	try:
+		attrlist = m.__all__
+	except AttributeError:
+		attrlist = dir (m)
+	for attr in attrlist:
+		globals()[attr] = getattr (m, attr)
 
-
+def processSource(redditurl):
+    headers = {
+        'User-Agent': user_agent,
+    }
+    requesturl = redditurl
+    page2 = requests.get(requesturl, headers=headers)
+    page = (page2.text).split("commentarea", 1)[-1]
+    #print page
+    sourceurl = redditurl
+    sourcefound = False
+    sourcefoundreloop = False
+    while sourcefound == False:
+        if ((page).find("pixiv.net")) != -1:
+           chopped = (page).split("pixiv.net", 1)[0][-150:]+"pixiv.net"+(page).split("pixiv.net", 1)[-1][:150]
+           #print chopped
+           if chopped.find("source") or chopped.find("Source") or chopped.find("artist") or sourcefoundreloop == True:
+            print "Source from Pixiv found!"
+            
+            sourceurl = "http://www.pixiv.net"+((page).split("pixiv.net", 1)[-1][:150]).split("\"")[0]
+            print sourceurl
+            sourcefound = True
+        else:
+            print "cannot find pixiv"
+            
+        if ((page).find("deviantart.com")) != -1:
+           chopped = (page).split("deviantart.com", 1)[0][-150:]+"deviantart.com"+(page).split("deviantart.com", 1)[-1][:150]
+           #print chopped
+           if chopped.find("source") or chopped.find("Source") or chopped.find("artist") or sourcefoundreloop == True:
+            print "Source from dA found!"
+            
+            sourceurl = "http://www.deviantart.com"+((page).split("deviantart.com", 1)[-1][:150]).split("\"")[0]
+            print sourceurl
+            sourcefound = True
+        else:
+            print "cannot find dA"
+            
+        if ((page).find("tumblr.com")) != -1 and sourcefound == False:
+           chopped = (page).split("tumblr.com", 1)[0][-150:]+"tumblr.com"+(page).split("tumblr.com", 1)[-1][:150]
+           #print chopped
+           if chopped.find("source") or chopped.find("Source") or chopped.find("artist") or sourcefoundreloop == True:
+            print "Source from Tumblr found!"
+            
+            sourceurl = "http://tumblr.com"+((page).split("tumblr.com", 1)[-1][:150]).split("\"")[0]
+            print sourceurl
+            sourcefound = True
+        else:
+            print "cannot find tumblr"
+            
+        if ((page).find("twitter.com")) != -1 and sourcefound == False:
+           chopped = (page).split("twitter.com", 1)[0][-150:]+"twitter.com"+(page).split("twitter.com", 1)[-1][:150]
+           #print chopped
+           if chopped.find("source") or chopped.find("Source") or chopped.find("artist") or sourcefoundreloop == True:
+            print "Source from Twitter Found!"
+            
+            sourceurl = "http://twitter.com"+((page).split("twitter.com", 1)[-1][:150]).split("\"")[0]
+            print sourceurl
+            sourcefound = True
+        else:
+            print "cannot find twitter"
+            
+        #if ((page).find("t.co")) != -1 and sourcefound == False:
+        #   chopped = (page).split("t.co", 1)[0][-150:]+"t.co"+(page).split("t.co", 1)[-1][:150]
+        #   #print chopped
+        #   if chopped.find("source") or chopped.find("Source") or chopped.find("artist") or sourcefoundreloop == True:
+        #    print "Source from T.co found!"
+        #    
+        #    sourceurl = "http://t.co"+((page).split("t.co", 1)[-1][:150]).split("\"")[0]
+        #    print sourceurl
+        #    sourcefound = True
+        #else:
+        #   print "cannot find tco"
+        if sourcefoundreloop == True and sourcefound == False:
+            sourcefound = True
+            print sourceurl
+        sourcefoundreloop = True
+    return sourceurl
+    
 def processUrl(suburl):
     twturl = suburl
     if "imgur" in suburl:
@@ -106,6 +193,9 @@ while (posted == 0):
                         if link_to_reddit == True:
                             titlelength = 135 - (53 + len(hashtags))
                             subpermalink = submission.permalink
+                        if link_to_source == True:
+                            titlelength = 135 - (53 + len(hashtags))
+                            subpermalink = submission.permalink
                         else:
                             titlelength = 135 - (23 + len(hashtags))
                             subpermalink = ""
@@ -122,8 +212,22 @@ while (posted == 0):
                             shorttitle = ""
 
                         tweeturl = processUrl(submission.url)
+                        page = requests.get("https://www.reddit.com/r/Honkers/comments/2yp6q4/startdash_daily_honk_20/")
+                        if "pixiv" in page.text:
+                            chopped = (page.text).split('pixiv"', 1)[-1][:150]+(page.text).split('pixiv', 1)[0][-150:]
+                            print chopped
+                        
+                        if "tumblr" in page.text:
+                            chopped = (page.text).split('tumblr"', 1)[-1][:150]+(page.text).split('tumblr', 1)[0][-150:]
+                            print chopped
+                            
+                        if "deviantart" in page.text:
+                            chopped = (page.text).split('deviantart"', 1)[-1][:150]+(page.text).split('deviantart', 1)[0][-150:]
+                            print chopped
 
                         if ((tweeturl[-4:] == ".jpg" or tweeturl[-5:] == "jpeg" or tweeturl[-4:] == ".png") and (post_images == True)) or ((tweeturl[-4:] == ".gif") and (post_gifs == True)):
+                            if link_to_source == True:
+                                subpermalink = processSource(subpermalink)
                             print "\n\nTwitter Pic Post:\n\t" + (shorttitle + " " + hashtags + " " + subpermalink)
                             if not os.path.exists(img_dir + submission.id + "_" + tweeturl.split('/')[-1]):
                                 urllib.urlretrieve(
@@ -161,3 +265,7 @@ newlogs = newlogs[:(7 * repeat_threshold)]
 #print newlogs
 file.write(newlogs)
 file.close()
+#this starts stat collecting
+whatismyname = twitter.verify_credentials(skip_status='1')
+print whatismyname["screen_name"]
+os.system("python /var/NicoBot/output_followers.py "+whatismyname["screen_name"])
